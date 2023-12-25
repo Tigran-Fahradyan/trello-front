@@ -1,36 +1,23 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import axios from "axios";
 
+const API_URL = 'https://trello-back-064098635aa0.herokuapp.com/boards'
 const initialState = {
-    boards: [
-        {
-            id: 1,
-            name: "First Board",
-            lists: [
-                {
-                    id: 1,
-                    name: "Backlog",
-                    showRenamePopup: false,
-                    tasks: []
-                },
-                {
-                    id: 2,
-                    name: "In Progress",
-                    showRenamePopup: false,
-                    tasks: []
-                },
-                {
-                    id: 3,
-                    name: "Done",
-                    showRenamePopup: false,
-                    tasks: []
-                },
-            ],
-            users: []
-        }
-    ]
+    boards: [],
+    status: 'idle', // 'idle' | 'loading' | 'succeeded' | 'failed'
+    error: null
 }
 
-export const boardsReducer = createSlice({
+export const fetchBoards = createAsyncThunk('boards/fetchBoards', async () => {
+    try {
+        const response = await axios.get(API_URL);
+        return [...response.data];
+    } catch (err) {
+        return err.message;
+    }
+});
+
+export const boardsSlice = createSlice({
     name: "boards",
     initialState,
     reducers: {
@@ -124,8 +111,27 @@ export const boardsReducer = createSlice({
             const board = state.boards.find((item) => item.id === data.payload.id);
             board.users = board.users.filter((item) => item !== parseInt(data.payload.user_id))
         }
+    },
+    extraReducers(builder) {
+        builder
+            .addCase(fetchBoards.pending, (state, action) => {
+                state.status = 'loading';
+            })
+            .addCase(fetchBoards.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                const loadBoards = action.payload;
+                state.boards = state.boards.concat(loadBoards);
+            })
+            .addCase(fetchBoards.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
     }
 })
+
+export const selectAllBoards = (state) => state.boardsReducer.boards
+export const getBoardsStatus = (state) => state.boardsReducer.status
+export const getBoardsError = (state) => state.boardsReducer.error
 
 export const {
     create,
@@ -139,6 +145,6 @@ export const {
     moveTask,
     assignToBoard,
     removeFromBoard
-} = boardsReducer.actions;
+} = boardsSlice.actions;
 
-export default boardsReducer.reducer;
+export default boardsSlice.reducer;

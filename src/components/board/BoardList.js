@@ -1,5 +1,5 @@
 import {Button, Grid, Input} from "@mui/material";
-import {addTask, removeList, renameList, toggleRenameList} from "../../reducers/boardsReducer";
+import {addTask, removeList, renameList, toggleRenameList} from "./boardsSlice";
 import BoardTask from "./BoardTask";
 import {useDispatch} from "react-redux";
 import {useRef} from "react";

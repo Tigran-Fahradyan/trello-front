@@ -1,6 +1,6 @@
 import {Box, Button, Grid, Input, MenuItem, Select} from "@mui/material";
 import {useSelector, useDispatch} from "react-redux";
-import {createList, moveTask, assignToBoard, removeFromBoard} from "../../reducers/boardsReducer"
+import {createList, moveTask, assignToBoard, removeFromBoard, selectBoardById} from "./boardsSlice"
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import BoardList from "./BoardList";
@@ -8,7 +8,9 @@ import {DragDropContext} from "react-beautiful-dnd";
 
 const SingleBoard = () => {
     const id = useParams().id;
-    const boardData = useSelector((state) => state.boardsReducer.boards.find((b) => b.id === parseInt(id)));
+    const boardData = useSelector((state) => selectBoardById(state, Number(id)));
+    // const boardData = useSelector((state) => state.boardsReducer.boards.find((b) => b.id === parseInt(id)));
+    console.log(boardData)
     const assignedUserIds = boardData.users
     const users = useSelector((state) => state.usersReducer.users)
     const assignedUsers = users.filter((item) => assignedUserIds.includes(item.id));

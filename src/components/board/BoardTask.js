@@ -1,5 +1,5 @@
 import {Box, Button, Grid, Paper} from "@mui/material";
-import {removeTask} from "../../reducers/boardsReducer"
+import {removeTask} from "./boardsSlice"
 import {useDispatch} from "react-redux";
 import {useEffect} from "react";
 import {Draggable} from "react-beautiful-dnd";

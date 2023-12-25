@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {Provider} from "react-redux";
-import {store} from "./store";
+// import {Provider} from "react-redux";
+// import {store} from "./store";
+
+import {ApiProvider} from "@reduxjs/toolkit/query/react";
+import {apiSlice} from "./api/apiSlice";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,9 +16,10 @@ root.render(
   //       <App />
   //     </Provider>
   // </React.StrictMode>
-    <Provider store={store}>
+
+    <ApiProvider api={apiSlice}>
         <App />
-    </Provider>
+    </ApiProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
