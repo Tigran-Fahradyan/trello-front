@@ -1,38 +1,35 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useGetBoardsQuery, useAddBoardMutation} from "../../api/apiSlice";
 import {IconButton, Input} from "@mui/material";
-import {create, fetchBoards, getBoardsError, getBoardsStatus, selectAllBoards} from "./boardsSlice";
 import {AddBox} from "@mui/icons-material";
-import {useRef, useEffect} from "react";
+import {useRef} from "react";
 import BoardsExcerpt from "./BoardsExcerpt";
 
 const Boards = () => {
-    const dispatch = useDispatch();
-
-    const boards = useSelector(selectAllBoards);
-    const boardsStatus = useSelector(getBoardsStatus);
-    const error = useSelector(getBoardsError);
-
     const ref = useRef();
+
+    const {
+        data: boards,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetBoardsQuery();
+    const [addBoard] = useAddBoardMutation();
+
 
     const handleCreateClick = () => {
         if (ref.current.value.length > 0) {
-            dispatch(create({name: ref.current.value}));
-            ref.current.value = '';
+            let name = ref.current.value
+            addBoard({name: name});
         }
     }
 
-    useEffect(() => {
-        if (boardsStatus === 'idle') {
-            dispatch(fetchBoards())
-        }
-    }, [boardsStatus, dispatch]);
-
     let content;
-    if (boardsStatus === 'loading') {
+    if (isLoading) {
         content = <tr><td>"Loading..."</td></tr>;
-    } else if (boardsStatus === 'succeeded') {
+    } else if (isSuccess) {
         content = boards.map((board) => <BoardsExcerpt key={board.id+"_BoardsExcerpt"} board={board}></BoardsExcerpt>);
-    } else if (boardsStatus === 'failed') {
+    } else if (isError) {
         content = <tr><td>{error}</td></tr>;
     }
 

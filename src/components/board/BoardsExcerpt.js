@@ -1,13 +1,12 @@
-import {useDispatch} from "react-redux";
 import {Link} from "react-router-dom";
 import {Button} from "@mui/material";
-import {remove} from "./boardsSlice";
+import {useDeleteBoardMutation} from "../../api/apiSlice";
 
 const BoardsExcerpt = ({board}) => {
-    const dispatch = useDispatch();
+    const [deleteBoard] = useDeleteBoardMutation();
 
     const handleDeleteClick = (id) => {
-        dispatch(remove({id: id}));
+        deleteBoard({id: id});
     }
 
     return (

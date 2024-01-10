@@ -4,7 +4,7 @@ import {useDispatch} from "react-redux";
 import {useEffect} from "react";
 import {Draggable} from "react-beautiful-dnd";
 
-const BoardTask = ({index, board_id, list_id, task}) => {
+const SingleTask = ({index, board_id, list_id, task}) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -38,4 +38,4 @@ const BoardTask = ({index, board_id, list_id, task}) => {
     )
 }
 
-export default BoardTask;
+export default SingleTask;
