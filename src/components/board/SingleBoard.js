@@ -1,9 +1,10 @@
-import {Box, Grid, Input} from "@mui/material";
+import {Box, Button, Grid, Input} from "@mui/material";
 import {useParams} from "react-router-dom";
 import BoardList from "./BoardList";
 import {DragDropContext} from "react-beautiful-dnd";
-import {useGetBoardListsQuery} from "../../api/apiSlice";
+import {useAddBoardListMutation, useGetBoardListsQuery} from "../../api/apiSlice";
 import AssignedUsers from "./AssignedUsers";
+import {useState} from "react";
 
 const SingleBoard = () => {
     const id = useParams().id;
@@ -15,16 +16,11 @@ const SingleBoard = () => {
         isError,
         error
     } = useGetBoardListsQuery({id: id});
+    const [addBoardList] = useAddBoardListMutation();
 
-    // const assignedUserIds = []
-    // const assignedUserIds = board.users;
-    // const users = useSelector((state) => state.usersReducer.users);
-    // const assignedUsers = users.filter((item) => assignedUserIds.includes(item.id));
-    // const notAssignedUsers = users.filter((item) => !assignedUserIds.includes(item.id));
-
-    // const [listNewName, setListNewName] = useState('');
+    const [listNewName, setListNewName] = useState('');
     const handleAddInputChange = (name) => {
-        // setListNewName(name)
+        setListNewName(name)
     };
 
     const onDragEndHandler = (result) => {
@@ -38,14 +34,10 @@ const SingleBoard = () => {
         // dispatch(moveTask({board_id: board.id, movement: {source: source, destination: destination}}))
     }
 
-    // const [userIdAssignBoard, setUserIdAssignBoard] = useState(0);
-    // const handleUserChange = (value) => {
-    //     if (value > 0) {
-    //         setUserIdAssignBoard(parseInt(value))
-    //     }else{
-    //         setUserIdAssignBoard(0)
-    //     }
-    // }
+
+    const addListHandle = () => {
+        addBoardList({id: id, name: listNewName});
+    }
 
     let content;
     if (isLoading) {
@@ -70,29 +62,15 @@ const SingleBoard = () => {
                         </Grid>
                         <Box mt={3} p={3}>
                             <Input placeholder="List Name" onChange={(e) => handleAddInputChange(e.target.value)}></Input>
-                            {/*<Button onClick={() => dispatch(createList({board_id: boardData.id, name: listNewName}))}>Add List</Button>*/}
+                            <Button onClick={() => addListHandle()}>Add List</Button>
                         </Box>
                     </Box>
                 </DragDropContext>
                 <Box mt={3} p={3}>
-                    {
-                        // (notAssignedUsers).length > 0 ?
-                        //     <><Select sx={{ minWidth: 120 }} defaultValue="0" onChange={(e) => handleUserChange(e.target.value)}>
-                        //         <MenuItem key="select the value" value="0">
-                        //             Select User
-                        //         </MenuItem>
-                        //         {
-                        //             notAssignedUsers.map((item) => (
-                        //                 <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
-                        //             ))
-                        //         }
-                        //     </Select>
-                        //     <Button onClick={() => dispatch(assignToBoard({id: boardData.id, user_id: userIdAssignBoard}))}>Add User</Button></>
-                        //     : null
 
-                    }
                 </Box>
-                {/*<AssignedUsers></AssignedUsers>*/}
+                <AssignedUsers board_id={id}>
+                </AssignedUsers>
             </div>
         )
     }else{

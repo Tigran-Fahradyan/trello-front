@@ -1,20 +1,36 @@
-import {useGetBoardAssignedUsersQuery} from "../../api/apiSlice";
-import {Button} from "@mui/material";
+import {useGetBoardAssignedUsersQuery, useRemoveBoardUserMutation} from "../../api/apiSlice";
+import {Box, Button} from "@mui/material";
+import NotAssignedUsers from "./NotAssignedUsers";
 
-const AssignedUsers = () => {
+const AssignedUsers = ({board_id}) => {
+    const [removeBoardUser] = useRemoveBoardUserMutation();
+
+    const removeFromBoard = (user_id) => {
+        removeBoardUser({id: board_id, body: {board_user: {user_id: user_id}}});
+    }
+
     const {
         data: assignedUsers,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetBoardAssignedUsersQuery();
+    } = useGetBoardAssignedUsersQuery({id: board_id});
 
     let content;
     if (isLoading) {
         content = <p>"Loading..."</p>;
     } else if (isSuccess) {
-
+        content = assignedUsers.map((user) => (
+            <tr key={user.id}>
+                <td>
+                    {user.full_name}
+                </td>
+                <td>
+                    <Button onClick={() => removeFromBoard(user.id)}>Delete</Button>
+                </td>
+            </tr>
+        ))
     } else if (isError) {
         content = <p>{error}</p>;
     }
@@ -34,20 +50,12 @@ const AssignedUsers = () => {
 
                                 </thead>
                                 <tbody>
-                                {
-                                    assignedUsers.map((user) => (
-                                        <tr key={user.id}>
-                                            <td>
-                                                {user.name}
-                                            </td>
-                                            <td>
-                                                {/*<Button onClick={() => dispatch(removeFromBoard({id: id, user_id: user.id}))}>Delete</Button>*/}
-                                            </td>
-                                        </tr>
-                                    ))
-                                }
+                                    {content}
                                 </tbody>
                             </table>
+                            <Box mt={3} p={3}>
+                                <NotAssignedUsers board_id={board_id} assigned_users={assignedUsers}></NotAssignedUsers>
+                            </Box>
                         </div>
                     )
                     : content

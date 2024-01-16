@@ -1,15 +1,16 @@
 import {Box, Button, Grid, Paper} from "@mui/material";
-import {removeTask} from "./boardsSlice"
-import {useDispatch} from "react-redux";
-import {useEffect} from "react";
 import {Draggable} from "react-beautiful-dnd";
+import {useRemoveListTaskMutation} from "../../api/apiSlice";
 
 const SingleTask = ({index, board_id, list_id, task}) => {
-    const dispatch = useDispatch();
+    const [removeListTask] = useRemoveListTaskMutation();
 
-    useEffect(() => {
+    const handleRemoveTask = () => {
+        removeListTask({id: board_id, list_id: list_id, task_id: task.id});
+    }
 
-    }, [task])
+    // useEffect(() => {
+    // }, [task])
 
     return (
         <Draggable draggableId={board_id+'_'+list_id+'_'+task.id} index={index}>
@@ -19,7 +20,7 @@ const SingleTask = ({index, board_id, list_id, task}) => {
                         <Box m={2}>
                             <Grid item>
                                 <legend>{task.name}</legend>
-                                <Button onClick={() => dispatch(removeTask({board_id: board_id, list_id: list_id, task_id: task.id}))}>Remove Task</Button>
+                                <Button onClick={handleRemoveTask}>Remove Task</Button>
                                 <Paper
                                     sx={{
                                         height: 140,
