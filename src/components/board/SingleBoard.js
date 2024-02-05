@@ -2,7 +2,7 @@ import {Box, Button, Grid, Input} from "@mui/material";
 import {useParams} from "react-router-dom";
 import BoardList from "./BoardList";
 import {DragDropContext} from "react-beautiful-dnd";
-import {useAddBoardListMutation, useGetBoardListsQuery} from "../../api/apiSlice";
+import {useAddBoardListMutation, useGetBoardListsQuery, useMoveListTaskMutation} from "../../api/apiSlice";
 import AssignedUsers from "./AssignedUsers";
 import {useState} from "react";
 
@@ -17,6 +17,7 @@ const SingleBoard = () => {
         error
     } = useGetBoardListsQuery({id: id});
     const [addBoardList] = useAddBoardListMutation();
+    const [moveListTask] = useMoveListTaskMutation();
 
     const [listNewName, setListNewName] = useState('');
     const handleAddInputChange = (name) => {
@@ -24,14 +25,21 @@ const SingleBoard = () => {
     };
 
     const onDragEndHandler = (result) => {
-        const {source, destination} = result;
+        const {source, destination, draggableId} = result;
         if (!destination){
             return;
         }
         if (destination.droppableId === source.droppableId && destination.index === source.index){
             return;
         }
-        // dispatch(moveTask({board_id: board.id, movement: {source: source, destination: destination}}))
+
+        let split_data = draggableId.split("_");
+        let taskId = split_data[split_data.length - 1];
+        if (!taskId) {
+            return;
+        }
+
+        moveListTask({id: id, list_id: source.droppableId, task_id: taskId, body: {list_task: {board_list_id: destination.droppableId}}});
     }
 
 

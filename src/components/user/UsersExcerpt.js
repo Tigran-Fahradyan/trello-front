@@ -1,12 +1,11 @@
-import {useDispatch} from "react-redux";
-import {remove} from "./usersSlice";
 import {Button} from "@mui/material";
+import {useRemoveUserMutation} from "../../api/apiSlice";
 
 const UsersExcerpt = ({ user }) => {
-    const dispatch = useDispatch();
-
+    const [removeUser] = useRemoveUserMutation();
     const handleDeleteClick = (id) => {
-        dispatch(remove({id: id}));
+        removeUser({id: id});
+
     }
 
     return (

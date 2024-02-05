@@ -11,6 +11,21 @@ export const apiSlice = createApi({
             query: () => '/users',
             providesTags: ['Users']
         }),
+        addUser: builder.mutation({
+            query: (user) => ({
+              url: '/users',
+                method: 'POST',
+                body: user
+            }),
+            invalidatesTags: ['Users']
+        }),
+        removeUser: builder.mutation({
+            query: ({id}) => ({
+                url: `/users/${id}`,
+                method: 'DELETE'
+            }),
+            invalidatesTags: ['Users']
+        }),
         getBoards: builder.query({
             query: () => '/boards',
             providesTags: ['Boards']
@@ -74,6 +89,14 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['BoardLists']
         }),
+        updateBoardList: builder.mutation({
+            query: ({list, body}) => ({
+                url: `/boards/${list.board_id}/board_lists/${list.id}`,
+                method: "PATCH",
+                body: body
+            }),
+            invalidatesTags: ['BoardLists']
+        }),
         getListTasks: builder.query({
             query: ({id, list_id}) => `/boards/${id}/board_lists/${list_id}/list_tasks`,
             providesTags: ['ListTasks']
@@ -93,11 +116,21 @@ export const apiSlice = createApi({
             }),
             invalidatesTags: ['ListTasks']
         }),
+        moveListTask: builder.mutation({
+            query: ({id, list_id, task_id, body}) => ({
+                url: `/boards/${id}/board_lists/${list_id}/list_tasks/${task_id}`,
+                method: `PATCH`,
+                body: body
+            }),
+            invalidatesTags: ['ListTasks']
+        })
     })
 })
 
 export const {
     useGetUsersQuery,
+    useAddUserMutation,
+    useRemoveUserMutation,
     useGetBoardsQuery,
     useAddBoardMutation,
     useDeleteBoardMutation,
@@ -106,9 +139,11 @@ export const {
     useGetBoardListsQuery,
     useAddBoardListMutation,
     useDeleteBoardListMutation,
+    useUpdateBoardListMutation,
     useAssignBoardUserMutation,
     useRemoveBoardUserMutation,
     useGetListTasksQuery,
     useAddListTaskMutation,
     useRemoveListTaskMutation,
+    useMoveListTaskMutation,
 } = apiSlice

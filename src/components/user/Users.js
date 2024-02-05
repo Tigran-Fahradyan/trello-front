@@ -1,68 +1,73 @@
 import {IconButton, Input} from "@mui/material";
 import {AddBox} from "@mui/icons-material";
-import {useSelector, useDispatch} from "react-redux";
-import {useEffect, useRef} from "react";
-import {create, selectAllUsers, getUsersStatus, getUsersError, fetchUsers} from "./usersSlice";
+import {useRef} from "react";
 import UsersExcerpt from "./UsersExcerpt";
+import {useAddUserMutation, useGetUsersQuery} from "../../api/apiSlice";
+import { useForm } from "react-hook-form"
 
 const Users = () => {
-    const dispatch = useDispatch();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-    const users = useSelector(selectAllUsers);
-    const usersStatus = useSelector(getUsersStatus);
-    const error = useSelector(getUsersError);
+    const onSubmit = (data) => {
+        addUser({full_name: data.full_name})
+        ref.current.value = '';
+    }
+
+    const {
+        data: users,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetUsersQuery();
+    const [addUser] = useAddUserMutation();
 
     const ref = useRef();
 
-    const handleCreateClick = () => {
-        if (ref.current.value.length > 0){
-            dispatch(create({name: ref.current.value}));
-            ref.current.value = '';
-        }
-    }
-
-    useEffect(() => {
-        if (usersStatus === 'idle') {
-            dispatch(fetchUsers())
-        }
-    }, [usersStatus, dispatch]);
-
     let content;
-    if (usersStatus === 'loading') {
-        console.log(1)
-        content = <tr><td>"Loading..."</td></tr>;
-    } else if (usersStatus === 'succeeded') {
-        console.log(2)
+    if (isLoading) {
+        content = <p>"Loading..."</p>;
+    } else if (isSuccess) {
         content = users.map((user) => <UsersExcerpt key={user.id+"_UsersExcerpt"} user={user}></UsersExcerpt>);
-    } else if (usersStatus === 'failed') {
-        console.log(3)
-        content = <tr><td>{error}</td></tr>;
+    } else if (isError) {
+        content = <p>{error}</p>;
     }
 
-    return (
-        <div className="table-container">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
-                </tr>
+    if (isSuccess) {
+        return (
+            <div className="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
 
-                </thead>
-                <tbody>
-                {content}
-                </tbody>
-            </table>
-            <div className="center">
-                <Input inputRef={ref}></Input>
-                <IconButton onClick={handleCreateClick}>
-                    <AddBox/>Add
-                </IconButton>
+                    </thead>
+                    <tbody>
+                    {content}
+                    </tbody>
+                </table>
+                <div className="center">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <Input inputRef={ref} {...register("full_name", {required: true})}></Input>
+                        {errors.full_name && <span>This field is required</span>}
+                        <IconButton type={"submit"}>
+                            <AddBox/>Add
+                        </IconButton>
+                    </form>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }else{
+        return content;
+    }
 }
 
 export default Users;

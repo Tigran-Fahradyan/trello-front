@@ -1,14 +1,10 @@
 import {Button, Grid, Input} from "@mui/material";
-import {renameList, toggleRenameList} from "./boardsSlice";
-import {useDispatch} from "react-redux";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import {Droppable} from "react-beautiful-dnd";
 import BoardTasks from "./BoardTasks";
-import {useDeleteBoardListMutation, useAddListTaskMutation} from "../../api/apiSlice";
+import {useDeleteBoardListMutation, useAddListTaskMutation, useUpdateBoardListMutation} from "../../api/apiSlice";
 
 const BoardList = ({list}) => {
-    const dispatch = useDispatch();
-
     const ref = useRef();
     const descRef = useRef();
 
@@ -21,17 +17,28 @@ const BoardList = ({list}) => {
     }
     const [deleteBoardList] = useDeleteBoardListMutation();
     const [addListTask] = useAddListTaskMutation();
+    const [updateBoardList] = useUpdateBoardListMutation();
 
     const handleRemoveListClick = (list) => {
         deleteBoardList({list: list});
+    }
+
+    const [showRenamePopup, setShowRenamePopup] = useState(false);
+    const toggleRenameInput = (e, action = "hide") => {
+        if (action === "show") {
+            setShowRenamePopup(true)
+        }else{
+            setShowRenamePopup(false)
+            updateBoardList({list: list, body: {board_list: {name: e.target.value}}})
+        }
     }
     
     return (
         <Grid key={"grid_"+list.id} item>
             {
-                list.showRenamePopup
-                    ? <><Input key={"input_"+list.id} defaultValue={list.name} onBlur={(e) => dispatch(renameList({board_id: list.board_id, list_id: list.id, name: e.target.value}))}></Input></>
-                    : <Grid key={"name_"+list.id} container onClick={() => dispatch(toggleRenameList({board_id: list.board_id, list_id: list.id}))}>{list.name}</Grid>
+                showRenamePopup
+                    ? <><Input key={"input_"+list.id} defaultValue={list.name} onBlur={(e) => toggleRenameInput(e)}></Input></>
+                    : <Grid key={"name_"+list.id} container onClick={(e) => toggleRenameInput(e, "show")}>{list.name}</Grid>
             }
             <Button onClick={() => handleRemoveListClick(list)}>Remove</Button>
 

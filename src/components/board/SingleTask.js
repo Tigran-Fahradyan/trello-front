@@ -9,9 +9,6 @@ const SingleTask = ({index, board_id, list_id, task}) => {
         removeListTask({id: board_id, list_id: list_id, task_id: task.id});
     }
 
-    // useEffect(() => {
-    // }, [task])
-
     return (
         <Draggable draggableId={board_id+'_'+list_id+'_'+task.id} index={index}>
             {
@@ -25,7 +22,7 @@ const SingleTask = ({index, board_id, list_id, task}) => {
                                     sx={{
                                         height: 140,
                                         width: 100,
-                                        backgroundColor: '#fff',
+                                        backgroundColor: '#7f7f7f',
                                     }}
                                 >
                                     {task.description}
