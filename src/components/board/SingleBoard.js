@@ -1,8 +1,9 @@
 import {Box, Button, Grid, Input} from "@mui/material";
 import {useParams} from "react-router-dom";
-import BoardList from "./BoardList";
+import Lists from "../list/Lists";
 import {DragDropContext} from "react-beautiful-dnd";
-import {useAddBoardListMutation, useGetBoardListsQuery, useMoveListTaskMutation} from "../../api/apiSlice";
+import {useMoveTaskMutation} from "../task/taskSlice";
+import {useGetListsQuery, useAddListMutation} from "../list/listsSlice";
 import AssignedUsers from "./AssignedUsers";
 import {useState} from "react";
 
@@ -15,9 +16,9 @@ const SingleBoard = () => {
         isSuccess,
         isError,
         error
-    } = useGetBoardListsQuery({id: id});
-    const [addBoardList] = useAddBoardListMutation();
-    const [moveListTask] = useMoveListTaskMutation();
+    } = useGetListsQuery({id: id});
+    const [addBoardList] = useAddListMutation();
+    const [moveListTask] = useMoveTaskMutation();
 
     const [listNewName, setListNewName] = useState('');
     const handleAddInputChange = (name) => {
@@ -63,8 +64,8 @@ const SingleBoard = () => {
                     <Box>
                         <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={25}>
                             {
-                                lists.map((list) => (
-                                    <BoardList key={list.id} list={list}></BoardList>
+                                lists.ids.map((list_id) => (
+                                    <Lists key={list_id} list={lists.entities[list_id]}></Lists>
                                 ))
                             }
                         </Grid>

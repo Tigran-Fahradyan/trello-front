@@ -1,4 +1,4 @@
-import {useGetBoardsQuery, useAddBoardMutation} from "../../api/apiSlice";
+import {useGetBoardsQuery, useAddBoardMutation} from "./boardsSlice";
 import {IconButton, Input} from "@mui/material";
 import {AddBox} from "@mui/icons-material";
 import {useRef} from "react";
@@ -16,7 +16,6 @@ const Boards = () => {
     } = useGetBoardsQuery();
     const [addBoard] = useAddBoardMutation();
 
-
     const handleCreateClick = () => {
         if (ref.current.value.length > 0) {
             let name = ref.current.value
@@ -28,7 +27,7 @@ const Boards = () => {
     if (isLoading) {
         content = <tr><td>"Loading..."</td></tr>;
     } else if (isSuccess) {
-        content = boards.map((board) => <BoardsExcerpt key={board.id+"_BoardsExcerpt"} board={board}></BoardsExcerpt>);
+        content = boards.ids.map((board_id) => <BoardsExcerpt key={boards.entities[board_id].id+"_BoardsExcerpt"} board={boards.entities[board_id]}></BoardsExcerpt>);
     } else if (isError) {
         content = <tr><td>{error}</td></tr>;
     }
@@ -45,7 +44,9 @@ const Boards = () => {
 
                 </thead>
                 <tbody>
-                    {content}
+                    {
+                        content
+                    }
                 </tbody>
             </table>
             <div className="center">

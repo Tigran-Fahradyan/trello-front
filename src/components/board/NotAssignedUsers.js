@@ -1,5 +1,7 @@
-import {useAssignBoardUserMutation, useGetUsersQuery} from "../../api/apiSlice";
+import {useAssignBoardUserMutation} from "./boardsSlice";
+import {selectAllUsers, useGetUsersQuery} from "../user/usersSlice";
 import {Button, MenuItem, Select} from "@mui/material";
+import {useSelector} from "react-redux";
 
 const NotAssignedUsers = ({board_id, assigned_users}) => {
 
@@ -18,41 +20,49 @@ const NotAssignedUsers = ({board_id, assigned_users}) => {
         }
     }
 
-    let notAssignedUsers, content;
-    const {
-        data: allUsers,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-    } = useGetUsersQuery();
+    let content, assignedUserIds, notAssignedUsersList;
 
-    if (isLoading) {
-        content = <p>"Loading..."</p>;
-    } else if (isSuccess) {
-        const assignedUserIds = assigned_users.map((user) => user.id);
-        notAssignedUsers = allUsers.filter((item) => !assignedUserIds.includes(item.id));
-    } else if (isError) {
-        content = <p>{error}</p>;
-    }
+    const allUsers = useSelector((state) => selectAllUsers([state]))
+    assignedUserIds = assigned_users.ids;
+    notAssignedUsersList = allUsers.filter((item) => !assignedUserIds.includes(item.id));
+    console.log(assignedUserIds, allUsers)
+
+
+    // const {
+    //     data: allUsers,
+    //     isLoading,
+    //     isSuccess,
+    //     isError,
+    //     error
+    // } = useGetUsersQuery();
+
+    // if (isLoading) {
+    //     content = <p>"Loading..."</p>;
+    // } else if (isSuccess) {
+    //     const assignedUserIds = assigned_users.ids;
+    //     notAssignedUserIds = allUsers.ids.filter((id) => !assignedUserIds.includes(id));
+    //     notAssignedUserIds.map((id) => notAssignedUsers.push(allUsers.entities[id]))
+    // } else if (isError) {
+    //     content = <p>{error}</p>;
+    // }
 
     return (
         <>
             {
-                isSuccess ?
+                allUsers ?
                 (
                     <><Select sx={{ minWidth: 120 }} defaultValue="0" onChange={(e) => handleUserChange(e.target.value)}>
                         <MenuItem key="select the value" value="0">
                             Select User
                         </MenuItem>
                         {
-                            notAssignedUsers.map((item) => (
+                            notAssignedUsersList.map((item) => (
                                 <MenuItem key={item.id} value={item.id}>{item.full_name}</MenuItem>
                             ))
                         }
                     </Select>
                         <Button onClick={handleAssignToBoard}>Add User</Button></>
-                ) : content
+                ) : <p>"Loading..."</p>
 
             }
         </>

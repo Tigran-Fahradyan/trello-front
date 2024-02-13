@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import {Button} from "@mui/material";
-import {useDeleteBoardMutation} from "../../api/apiSlice";
+import {useDeleteBoardMutation} from "./boardsSlice";
 
 const BoardsExcerpt = ({board}) => {
     const [deleteBoard] = useDeleteBoardMutation();

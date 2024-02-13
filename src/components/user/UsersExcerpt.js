@@ -1,5 +1,5 @@
 import {Button} from "@mui/material";
-import {useRemoveUserMutation} from "../../api/apiSlice";
+import {useRemoveUserMutation} from "./usersSlice";
 
 const UsersExcerpt = ({ user }) => {
     const [removeUser] = useRemoveUserMutation();

@@ -2,7 +2,7 @@ import {IconButton, Input} from "@mui/material";
 import {AddBox} from "@mui/icons-material";
 import {useRef} from "react";
 import UsersExcerpt from "./UsersExcerpt";
-import {useAddUserMutation, useGetUsersQuery} from "../../api/apiSlice";
+import {useAddUserMutation, useGetUsersQuery} from "./usersSlice";
 import { useForm } from "react-hook-form"
 
 const Users = () => {

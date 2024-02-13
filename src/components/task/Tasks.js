@@ -1,14 +1,14 @@
-import {useGetListTasksQuery} from "../../api/apiSlice";
+import {useGetTasksQuery} from "./taskSlice";
 import SingleTask from "./SingleTask";
 
-const BoardTasks = ({list}) => {
+const Tasks = ({list}) => {
     const {
         data: tasks,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetListTasksQuery({id: list.board_id, list_id: list.id})
+    } = useGetTasksQuery({id: list.board_id, list_id: list.id})
 
     let content;
     if (isLoading) {
@@ -22,8 +22,8 @@ const BoardTasks = ({list}) => {
         <>
             {
                 isSuccess ?
-                tasks.map((task, index) => (
-                    <SingleTask index={index} key={list.board_id + "_list_" + list.id + 'task_' + task.id} task={task} list_id={list.id} board_id={list.board_id}></SingleTask>
+                tasks.ids.map((task_id, index) => (
+                    <SingleTask index={index} key={list.board_id + "_list_" + list.id + 'task_' + task_id} task={tasks.entities[task_id]} list_id={list.id} board_id={list.board_id}></SingleTask>
                 ))
                 : content
             }
@@ -31,4 +31,4 @@ const BoardTasks = ({list}) => {
     )
 }
 
-export default BoardTasks;
+export default Tasks;

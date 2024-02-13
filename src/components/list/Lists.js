@@ -1,10 +1,11 @@
 import {Button, Grid, Input} from "@mui/material";
 import {useRef, useState} from "react";
 import {Droppable} from "react-beautiful-dnd";
-import BoardTasks from "./BoardTasks";
-import {useDeleteBoardListMutation, useAddListTaskMutation, useUpdateBoardListMutation} from "../../api/apiSlice";
+import Tasks from "../task/Tasks";
+import {useDeleteListMutation, useUpdateListMutation} from "./listsSlice";
+import {useAddTaskMutation} from "../task/taskSlice";
 
-const BoardList = ({list}) => {
+const Lists = ({list}) => {
     const ref = useRef();
     const descRef = useRef();
 
@@ -15,9 +16,9 @@ const BoardList = ({list}) => {
             descRef.current.value = '';
         }
     }
-    const [deleteBoardList] = useDeleteBoardListMutation();
-    const [addListTask] = useAddListTaskMutation();
-    const [updateBoardList] = useUpdateBoardListMutation();
+    const [deleteBoardList] = useDeleteListMutation();
+    const [updateBoardList] = useUpdateListMutation();
+    const [addListTask] = useAddTaskMutation();
 
     const handleRemoveListClick = (list) => {
         deleteBoardList({list: list});
@@ -47,7 +48,7 @@ const BoardList = ({list}) => {
                     (provided) => (
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             <Grid key={list.id} container direction="column" justifyContent="flex-start" alignItems="center">
-                                <BoardTasks list={list}></BoardTasks>
+                                <Tasks list={list}></Tasks>
                             </Grid>
                             {provided.placeholder}
                         </div>
@@ -67,4 +68,4 @@ const BoardList = ({list}) => {
     )
 }
 
-export default BoardList;
+export default Lists;

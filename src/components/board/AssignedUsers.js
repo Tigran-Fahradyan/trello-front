@@ -1,4 +1,4 @@
-import {useGetBoardAssignedUsersQuery, useRemoveBoardUserMutation} from "../../api/apiSlice";
+import {useGetBoardAssignedUsersQuery, useRemoveBoardUserMutation} from "./boardsSlice";
 import {Box, Button} from "@mui/material";
 import NotAssignedUsers from "./NotAssignedUsers";
 
@@ -21,13 +21,13 @@ const AssignedUsers = ({board_id}) => {
     if (isLoading) {
         content = <p>"Loading..."</p>;
     } else if (isSuccess) {
-        content = assignedUsers.map((user) => (
-            <tr key={user.id}>
+        content = assignedUsers.ids.map((user_id) => (
+            <tr key={user_id}>
                 <td>
-                    {user.full_name}
+                    {assignedUsers.entities[user_id].full_name}
                 </td>
                 <td>
-                    <Button onClick={() => removeFromBoard(user.id)}>Delete</Button>
+                    <Button onClick={() => removeFromBoard(user_id)}>Delete</Button>
                 </td>
             </tr>
         ))

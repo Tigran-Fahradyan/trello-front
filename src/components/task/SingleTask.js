@@ -1,9 +1,9 @@
 import {Box, Button, Grid, Paper} from "@mui/material";
 import {Draggable} from "react-beautiful-dnd";
-import {useRemoveListTaskMutation} from "../../api/apiSlice";
+import {useRemoveTaskMutation} from "./taskSlice";
 
 const SingleTask = ({index, board_id, list_id, task}) => {
-    const [removeListTask] = useRemoveListTaskMutation();
+    const [removeListTask] = useRemoveTaskMutation();
 
     const handleRemoveTask = () => {
         removeListTask({id: board_id, list_id: list_id, task_id: task.id});
