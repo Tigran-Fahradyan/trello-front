@@ -23,7 +23,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 body: body
             }),
             invalidatesTags: (response, error, arg) => [
-                {type: 'Task', id: arg.id}
+                {type: 'Task', id: 'LIST'}
             ]
         }),
         removeTask: builder.mutation({
@@ -32,7 +32,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE'
             }),
             invalidatesTags: (response, error, arg) => [
-                {type: 'Task', id: arg.id}
+                {type: 'Task', id: 'LIST'}
             ]
         }),
         moveTask: builder.mutation({
@@ -42,8 +42,14 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
               body: body
            }),
            invalidatesTags: (response, error, arg) => [
-              {type: 'Task', id: arg.id}
-           ]
+              {type: 'Task', id: 'LIST'}
+           ],
+            // onQueryStarted(arg, api) {
+            //     console.log(arg)
+            //     console.log(api)
+            //
+            //     console.log(api.getState('getLists'))
+            // }
         })
     })
 });

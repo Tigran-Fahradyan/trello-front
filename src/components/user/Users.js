@@ -32,7 +32,7 @@ const Users = () => {
     if (isLoading) {
         content = <p>"Loading..."</p>;
     } else if (isSuccess) {
-        content = users.map((user) => <UsersExcerpt key={user.id+"_UsersExcerpt"} user={user}></UsersExcerpt>);
+        content = users.ids.map((user_id) => <UsersExcerpt key={user_id+"_UsersExcerpt"} user={users.entities[user_id]}></UsersExcerpt>);
     } else if (isError) {
         content = <p>{error}</p>;
     }

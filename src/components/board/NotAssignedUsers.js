@@ -25,7 +25,6 @@ const NotAssignedUsers = ({board_id, assigned_users}) => {
     const allUsers = useSelector((state) => selectAllUsers([state]))
     assignedUserIds = assigned_users.ids;
     notAssignedUsersList = allUsers.filter((item) => !assignedUserIds.includes(item.id));
-    console.log(assignedUserIds, allUsers)
 
 
     // const {

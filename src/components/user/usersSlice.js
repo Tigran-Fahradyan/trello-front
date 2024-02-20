@@ -23,7 +23,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 body: user
             }),
             invalidatesTags: (result, error, arg) => [
-                {type: 'User', id: arg.id}
+                {type: 'User', id: 'LIST'}
             ]
         }),
         removeUser: builder.mutation({
@@ -32,7 +32,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE'
             }),
             invalidatesTags: (result, error, arg) => [
-                {type: 'User', id: arg.id}
+                {type: 'User', id: 'LIST'}
             ]
         })
     })
